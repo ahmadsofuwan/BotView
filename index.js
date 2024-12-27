@@ -1,3 +1,4 @@
+require('dotenv').config();
 const puppeteer = require('puppeteer');
 const axios = require('axios');
 async function checkProxy(proxy) {
@@ -19,11 +20,14 @@ async function main() {
     const proxyArr = proxyData.proxies;
     const randomIndex = Math.floor(Math.random() * proxyArr.length);
     const randomProxy = proxyArr[randomIndex];
-
+    const useProxy = Math.random() < 0.5;
     const browser = await puppeteer.launch({
         headless: false, // Set true jika tidak ingin membuka browser secara visual
-        args: [
+        args: useProxy ? [
             `--proxy-server=${randomProxy.ip}:${randomProxy.port}`,
+            '--no-sandbox',
+            '--disable-setuid-sandbox'
+        ] : [
             '--no-sandbox',
             '--disable-setuid-sandbox'
         ]
@@ -35,11 +39,26 @@ async function main() {
             get: () => false,
         });
     });
-    await page.goto('https://www.youtube.com/watch?v=wwzOWOGednA', {timeout: 60000*5});
+    console.log(`Membuka YouTube dengan proxy:${randomProxy.ip}:${randomProxy.port} `);
+    const close = process.env.CLOSE;
+    let duration = close.toLowerCase();
+    if (close) {
+        if (duration.includes('m')) {
+            let num = parseInt(duration.replace('m', ''));
+            duration = parseInt(duration.replace('m', '')) * 60000; // Konversi menit ke milidetik
+            console.log(`Durasi tutup: ${num} menit`);
+        } else if (duration.includes('h')) {
+            let num = parseInt(duration.replace('h', ''));
+            duration = parseInt(duration.replace('h', '')) * 3600000; // Konversi jam ke milidetik
+            console.log(`Durasi tutup: ${num} jam`);
+        }
+    }
+    let URL= process.env.URL;
+    console.log(URL)
+    await page.goto(URL, {timeout: 60000*5});
     await page.click('#movie_player > div.html5-video-container > video');
     await page.keyboard.press(' ');
-    console.log(`Membuka YouTube dengan proxy: vpn.onemonbot.com:55533`);
-    await new Promise(resolve => setTimeout(resolve, 300000)); // Tunda selama 5 menit
+    await new Promise(resolve => setTimeout(resolve, duration)); // Tunda selama 5 menit
     await browser.close();
     main(); // Panggil kembali fungsi main
     
