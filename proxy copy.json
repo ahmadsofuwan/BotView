@@ -1,0 +1,8 @@
+{
+    "proxies": [
+        {
+            "ip": "vpn.onemonbot.com",
+            "port": 55533
+        }
+    ]
+}
