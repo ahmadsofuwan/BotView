@@ -94,7 +94,9 @@ if (functionName === 'main') {
 } else if (functionName === 'proxy') {
     proxy();
 } else {
+    main();
     console.log('Fungsi tidak ditemukan. Gunakan "main" atau "proxy".');
+    console.log('default mian');
 }
 
 module.exports = { main, proxy }; // Ekspor fungsi yang ingin Anda jalankan
