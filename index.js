@@ -22,7 +22,7 @@ async function main() {
     const randomProxy = proxyArr[randomIndex];
     const useProxy = Math.random() < 0.5;
     const browser = await puppeteer.launch({
-        headless: false, // Set true jika tidak ingin membuka browser secara visual
+        headless: process.env.DEBUG === 'true', // Sesuaikan dengan nilai DEBUG dari env
         args: useProxy ? [
             `--proxy-server=${randomProxy.ip}:${randomProxy.port}`,
             '--no-sandbox',
